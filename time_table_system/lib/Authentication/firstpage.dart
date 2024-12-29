@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_table_system/Authentication/login.dart';
 import 'package:time_table_system/Authentication/register.dart';
 
 class FirstPage extends StatefulWidget {
@@ -9,17 +10,16 @@ class FirstPage extends StatefulWidget {
 
 class _FirstPageState extends State<FirstPage> {
   
-
   @override
   Widget build(context) {
     return MaterialApp(
       home: Scaffold(
         body: Container(
+          padding: const EdgeInsets.only(top: 80),
           color: const Color.fromARGB(255, 248, 246, 246),
           child: Center(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset(
@@ -77,11 +77,33 @@ class _FirstPageState extends State<FirstPage> {
                     backgroundColor: const Color.fromARGB(90, 95, 231, 231),
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 85),
+
+                        
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     )),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Login()));
+                },
                 child: const Text("Login"),
+              ),
+              const SizedBox(height: 40),
+              RichText(
+                textAlign: TextAlign.center,
+                text:const TextSpan(
+                  text: "By logging In Or Registering, You have to Agreed to ",
+                  style: TextStyle(color: Colors.black, fontSize: 10,),
+                  
+                  children: [
+                    TextSpan(
+                        text: "the terms And Conditions",
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 246, 181, 19))),
+                    TextSpan(text: " And ", style: TextStyle(color: Colors.black,fontSize: 10)),
+                    TextSpan(text: "Privacy Policy",style: TextStyle(color: Color.fromARGB(255, 246, 181, 19),fontSize: 10)),
+                  ],
+                ),
               ),
             ],
           )),
