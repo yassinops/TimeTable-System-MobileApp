@@ -47,18 +47,16 @@ class _RegisterState extends State<Register> {
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 80),
-        child: Center(
           child: Column(
-            
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Image.asset(
                 "assets/images/logo_iset.jpg",
                 width: 150,
                 height: 150,
               ),
-              const SizedBox(height: 90),
+              const SizedBox(height: 50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -91,7 +89,7 @@ class _RegisterState extends State<Register> {
                 ],
               ),
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
               Form(
                 key: _formKey,
@@ -179,12 +177,13 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               ElevatedButton(
+                
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(320, 49),
                   foregroundColor: Colors.white,
                   backgroundColor: const Color.fromARGB(90, 95, 231, 231),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 100, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 80, vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -198,7 +197,6 @@ class _RegisterState extends State<Register> {
             ],
           ),
         ),
-      ),
     );
   }
 }
