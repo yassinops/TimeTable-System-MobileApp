@@ -77,8 +77,6 @@ class _FirstPageState extends State<FirstPage> {
                     backgroundColor: const Color.fromARGB(90, 95, 231, 231),
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 85),
-
-                        
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     )),

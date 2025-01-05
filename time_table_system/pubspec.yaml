@@ -60,6 +60,7 @@ flutter:
   
   assets:
      - assets/images/logo_iset.jpg
+     - assets/images/profile.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -97,7 +97,7 @@ class _RegisterState extends State<Register> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Full Name",
+                    const Text("First Name",
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.start),
@@ -111,7 +111,7 @@ class _RegisterState extends State<Register> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
-                      validator: (value) => value == null || value.isEmpty
+                      validator : (value) => value == null || value.isEmpty
                           ? 'Enter your first name'
                           : null,
                     ),

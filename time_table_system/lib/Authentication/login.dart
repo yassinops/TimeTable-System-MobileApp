@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
   void _login() async {
     if (_formKey.currentState!.validate()) {
       try {
-        await _logService.login(
+        final userData = await _logService.login(
             _emailController.text, _passwordController.text);
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -28,7 +28,15 @@ class _LoginState extends State<Login> {
           ),
         );
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) =>const TimeTable()));
+          context,
+          MaterialPageRoute(
+            builder: (context) =>  TimeTable(
+              fullName: userData['fullName'],
+              role: userData['role'],
+              userId:userData['userId'],
+            ),
+          ),
+        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -38,6 +46,8 @@ class _LoginState extends State<Login> {
       }
     }
   }
+
+
 
   @override
   Widget build(context) {
