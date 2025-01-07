@@ -21,22 +21,35 @@ class _LoginState extends State<Login> {
       try {
         final userData = await _logService.login(
             _emailController.text, _passwordController.text);
-
-        ScaffoldMessenger.of(context).showSnackBar(
+            if (userData['role'] == "ADMIN") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Admin has no Access to the Mobile App"),
+            ),
+          );
+        } else if (userData['role'] == "TEACHER") {
+          ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(
+              content: Text("TEACHER can only check timetable on the website"),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TimeTable(
+                fullName: userData['fullName'],
+                role: userData['role'],
+                userId: userData['userId'],
+              ),
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("loged successfully"),
           ),
         );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>  TimeTable(
-              fullName: userData['fullName'],
-              role: userData['role'],
-              userId:userData['userId'],
-            ),
-          ),
-        );
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -46,8 +59,6 @@ class _LoginState extends State<Login> {
       }
     }
   }
-
-
 
   @override
   Widget build(context) {
@@ -125,7 +136,7 @@ class _LoginState extends State<Login> {
                             EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
                       validator: (value) => value == null || value.isEmpty
-                          ? 'Enter your first name'
+                          ? 'Enter your email'
                           : null,
                     ),
                     const SizedBox(height: 10),
@@ -149,7 +160,7 @@ class _LoginState extends State<Login> {
                         contentPadding: EdgeInsets.symmetric(vertical: 8),
                       ),
                       validator: (value) => value == null || value.length < 8
-                          ? 'Password must be at least 8 characters'
+                          ? 'Enter your Password '
                           : null,
                     ),
                     const SizedBox(

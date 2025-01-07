@@ -1,16 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:time_table_system/Authentication/login.dart';
+import 'package:time_table_system/HomePages/time_table.dart';
 import 'package:time_table_system/Profile/modify_info.dart';
 
 class Menu extends StatefulWidget {
-  const Menu({super.key, required this.fullName, required this.role,required this.userId});
+  const Menu({
+    super.key,
+    required this.fullName,
+    required this.role,
+    required this.userId,
+  });
   final String fullName;
   final String role;
   final int userId;
+
   @override
   State<Menu> createState() => _MenuState();
 }
 
 class _MenuState extends State<Menu> {
+  void _logout() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+      (Route<dynamic> route) => false,
+    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(widget.fullName +" logged out ")));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -46,9 +64,22 @@ class _MenuState extends State<Menu> {
                 color: Colors.black,
               ),
             ),
-            leading: const Icon(Icons.timer,
-                color: Color.fromARGB(255, 23, 125, 208)),
-            onTap: () {},
+            leading: const Icon(
+              Icons.timer,
+              color: Color.fromARGB(255, 23, 125, 208),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TimeTable(
+                    fullName: widget.fullName,
+                    role: widget.role,
+                    userId: widget.userId,
+                  ),
+                ),
+              );
+            },
           ),
           ListTile(
             title: const Text(
@@ -78,24 +109,12 @@ class _MenuState extends State<Menu> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ModifyInfo(
-                          userId: widget.userId,
-                        )),
+                  builder: (context) => ModifyInfo(
+                    userId: widget.userId,
+                  ),
+                ),
               );
             },
-          ),
-          ListTile(
-            title: const Text(
-              "Notification",
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-            leading: const Icon(
-              Icons.notification_important,
-              color: Color.fromARGB(255, 23, 125, 208),
-            ),
-            onTap: () {},
           ),
           ListTile(
             title: const Text(
@@ -108,7 +127,9 @@ class _MenuState extends State<Menu> {
               Icons.logout_sharp,
               color: Color.fromARGB(255, 23, 125, 208),
             ),
-            onTap: () {},
+            onTap: () {
+              _logout();
+            },
           ),
         ],
       ),
