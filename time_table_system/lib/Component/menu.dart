@@ -9,10 +9,12 @@ class Menu extends StatefulWidget {
     required this.fullName,
     required this.role,
     required this.userId,
+    required this.classId,
   });
   final String fullName;
   final String role;
   final int userId;
+  final int? classId;
 
   @override
   State<Menu> createState() => _MenuState();
@@ -25,8 +27,8 @@ class _MenuState extends State<Menu> {
       MaterialPageRoute(builder: (context) => Login()),
       (Route<dynamic> route) => false,
     );
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(widget.fullName +" logged out ")));
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(widget.fullName + " logged out ")));
   }
 
   @override
@@ -76,23 +78,11 @@ class _MenuState extends State<Menu> {
                     fullName: widget.fullName,
                     role: widget.role,
                     userId: widget.userId,
+                    classId: widget.classId,
                   ),
                 ),
               );
             },
-          ),
-          ListTile(
-            title: const Text(
-              "Calendar",
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-            leading: const Icon(
-              Icons.calendar_month_outlined,
-              color: Color.fromARGB(255, 23, 125, 208),
-            ),
-            onTap: () {},
           ),
           ListTile(
             title: const Text(

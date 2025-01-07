@@ -41,6 +41,7 @@ class _LoginState extends State<Login> {
                 fullName: userData['fullName'],
                 role: userData['role'],
                 userId: userData['userId'],
+                classId: userData['classId'],
               ),
             ),
           );
