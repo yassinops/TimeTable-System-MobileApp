@@ -1,34 +1,55 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:time_table_system/Entry/TimetableEntry.dart';
+import 'dart:convert';
 
 class TimetableService {
-  final String host = "172.16.106.172:8080"; // Host and port
-  final String path = "/timetables"; // API endpoint path
+  final String host = "192.168.100.96";
 
-  // Fetch timetable data
-  Future<List<Map<String, dynamic>>> fetchTimetable(int classId) async {
-    // Construct the URL using Uri.http
-    final Uri url = Uri.http(host, "$path/$classId");
+  Future<Map<String, List<TimetableEntry>>> fetchTimetable(int? classId, int userId, String role) async {
+    String path;
+    if (role == "TEACHER") {
+      path = "/teacher/timetables/$userId";
+    } else {
+      if (classId == null) {
+        throw Exception('Class ID is required for students');
+      }
+      path = "/timetables/$classId";
+    }
 
-    print('Fetching timetable from: $url'); // Debugging
+    Uri url = Uri(
+      scheme: 'http',
+      host: host,
+      port: 8080,
+      path: path,
+    );
+
+    print('Fetching timetable from: $url');
 
     try {
-      // Make the GET request
       final response = await http.get(url);
-
-      print('Response status code: ${response.statusCode}'); 
-      print('Response body: ${response.body}'); 
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data.cast<Map<String, dynamic>>();
+        final data = json.decode(response.body);
+        if (role == "TEACHER") {
+          final Map<String, List<TimetableEntry>> teacherTimetable = {};
+          data.forEach((day, entries) {
+            teacherTimetable[day] = entries.map((entry) => TimetableEntry.fromJson(entry)).toList();
+          });
+          return teacherTimetable;
+        } else {
+          final Map<String, dynamic> calendar = data['calendar'];
+          final Map<String, List<TimetableEntry>> studentTimetable = {};
+          calendar.forEach((day, entries) {
+            studentTimetable[day] = entries.map((entry) => TimetableEntry.fromJson(entry)).toList();
+          });
+          return studentTimetable;
+        }
       } else {
-        // Handle non-200 status codes
         throw Exception('Failed to load timetable: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle any errors that occur during the request
-      print('Error fetching timetable: $e'); // Debugging
       throw Exception('Failed to fetch timetable: $e');
     }
   }

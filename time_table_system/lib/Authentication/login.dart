@@ -16,24 +16,21 @@ class _LoginState extends State<Login> {
 
   final LoginauthService _logService = LoginauthService();
 
-  void _login() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        final userData = await _logService.login(
-            _emailController.text, _passwordController.text);
-            if (userData['role'] == "ADMIN") {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Admin has no Access to the Mobile App"),
-            ),
-          );
-        } else if (userData['role'] == "TEACHER") {
-          ScaffoldMessenger.of(context).showSnackBar(
-           const SnackBar(
-              content: Text("TEACHER can only check timetable on the website"),
-            ),
-          );
-        } else {
+void _login() async {
+  if (_formKey.currentState!.validate()) {
+    try {
+      final userData = await _logService.login(
+          _emailController.text, _passwordController.text);
+
+      if (userData['role'] == "ADMIN") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Admin has no Access to the Mobile App"),
+          ),
+        );
+      } else {
+        // Determine the ID to pass based on the role
+        if (userData['role'] == "TEACHER") {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -41,26 +38,38 @@ class _LoginState extends State<Login> {
                 fullName: userData['fullName'],
                 role: userData['role'],
                 userId: userData['userId'],
-                classId: userData['classId'],
+                classId: null, // Set classId to null for teachers
               ),
             ),
           );
-          ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("loged successfully"),
-          ),
-        );
+        } else if (userData['role'] == "STUDENT") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TimeTable(
+                fullName: userData['fullName'],
+                role: userData['role'],
+                userId: userData['userId'],
+                classId: userData['classId'], // Pass classId for students
+              ),
+            ),
+          );
         }
-      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
+          const SnackBar(
+            content: Text("Logged in successfully"),
           ),
         );
       }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
     }
   }
-
+}
   @override
   Widget build(context) {
     return Scaffold(
@@ -175,7 +184,7 @@ class _LoginState extends State<Login> {
                         "Forget Password?",
                         textAlign: TextAlign.end,
                         style: TextStyle(
-                          color: const Color.fromARGB(255, 61, 145, 213),
+                          color: Color.fromARGB(255, 61, 145, 213),
                         ),
                       ),
                     ),
@@ -198,7 +207,6 @@ class _LoginState extends State<Login> {
                   ),
                   onPressed: () {
                     _login();
-                    print("user logged in successfuly");
                   },
                   child: const Text("Login"))
             ],

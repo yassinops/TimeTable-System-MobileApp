@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class UpdateService {
-  final String host = "172.16.106.172:8080"; // Host and port
+  final String host = "192.168.100.96:8080"; // Host and port
   final String path = "/student"; // Base path for student-related endpoints
 
   // Fetch user data

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_table_system/Component/menu.dart';
+import 'package:time_table_system/Entry/TimetableEntry.dart';
 import 'package:time_table_system/services/time_table_service.dart';
 
 class TimeTable extends StatefulWidget {
@@ -20,12 +21,10 @@ class TimeTable extends StatefulWidget {
 }
 
 class _TimeTableState extends State<TimeTable> {
-  late Future<List<Map<String, dynamic>>> _timetableFuture;
+  late Future<Map<String, List<TimetableEntry>>> _timetableFuture;
 
-  // Timetable service
   final TimetableService _timetableService = TimetableService();
 
-  // List of days for the dropdown
   final List<String> _daysOfWeek = [
     'MONDAY',
     'TUESDAY',
@@ -36,15 +35,16 @@ class _TimeTableState extends State<TimeTable> {
     'SUNDAY',
   ];
 
-  // Selected day (default to current day)
-  String _selectedDay = 'MONDAY'; // Default to Monday
+  String _selectedDay = 'MONDAY';
 
   @override
   void initState() {
     super.initState();
-
-    // Fetch timetable data when the widget is initialized
-    _timetableFuture = _timetableService.fetchTimetable(widget.classId!);
+    if (widget.role != "TEACHER" && widget.classId == null) {
+      throw Exception('Class ID is required for non-teacher roles');
+    }
+    _timetableFuture = _timetableService.fetchTimetable(
+        widget.classId, widget.userId, widget.role);
   }
 
   @override
@@ -52,12 +52,7 @@ class _TimeTableState extends State<TimeTable> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(90, 95, 231, 231),
-        title: const Text(
-          "UniTimeTable",
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
+        title: const Text("UniTimeTable", style: TextStyle(color: Colors.white)),
       ),
       drawer: Menu(
         fullName: widget.fullName,
@@ -73,7 +68,6 @@ class _TimeTableState extends State<TimeTable> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Dropdown to select the day
                 DropdownButton<String>(
                   value: _selectedDay,
                   onChanged: (String? newValue) {
@@ -81,7 +75,8 @@ class _TimeTableState extends State<TimeTable> {
                       _selectedDay = newValue!;
                     });
                   },
-                  items: _daysOfWeek.map<DropdownMenuItem<String>>((String value) {
+                  items: _daysOfWeek
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -92,7 +87,7 @@ class _TimeTableState extends State<TimeTable> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
+            child: FutureBuilder<Map<String, List<TimetableEntry>>>(
               future: _timetableFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -109,7 +104,8 @@ class _TimeTableState extends State<TimeTable> {
                         ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              _timetableFuture = _timetableService.fetchTimetable(widget.classId!);
+                              _timetableFuture = _timetableService.fetchTimetable(
+                                  widget.classId, widget.userId, widget.role);
                             });
                           },
                           child: const Text('Retry'),
@@ -118,18 +114,16 @@ class _TimeTableState extends State<TimeTable> {
                     ),
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No timetable data available.'));
+                  return const Center(child: Text('No timetable data available.'));
                 } else {
                   final timetableData = snapshot.data!;
-                  final calendar = timetableData[0]['calendar'] as Map<String, dynamic>;
-                  final currentDayEntries = calendar[_selectedDay] ?? [];
-
-                  if (currentDayEntries.isEmpty) {
-                    return const Center(
-                        child: Text('No classes scheduled for the selected day.'));
+                  if (!timetableData.containsKey(_selectedDay)) {
+                    return const Center(child: Text('No classes scheduled for the selected day.'));
                   }
-
+                  final currentDayEntries = timetableData[_selectedDay]!;
+                  if (currentDayEntries.isEmpty) {
+                    return const Center(child: Text('No classes scheduled for the selected day.'));
+                  }
                   return ListView.builder(
                     padding: const EdgeInsets.all(16.0),
                     itemCount: currentDayEntries.length,
@@ -139,36 +133,14 @@ class _TimeTableState extends State<TimeTable> {
                         margin: const EdgeInsets.only(bottom: 16.0),
                         child: ListTile(
                           title: Text(
-                            entry['subjectName'] ?? 'No Subject',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            entry.subjectName,
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Teacher: ${entry['teacherName'] ?? 'No Teacher'}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                'Room: ${entry['roomName'] ?? 'No Room'}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                'Seance: ${entry['Seance'] ?? 'No Seance'}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                              Text('Room: ${entry.roomName}', style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                              Text('Seance: ${entry.seance}', style: const TextStyle(fontSize: 16, color: Colors.grey)),
                             ],
                           ),
                         ),
