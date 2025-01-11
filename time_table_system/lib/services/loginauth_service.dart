@@ -2,13 +2,16 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class LoginauthService {
-  final String host = "192.168.100.96:8080"; // Host and port
+  final String host = "localhost"; // Host only
+  final int port = 8080; // Port separately
   final String path = "/api/v1/auth/authenticate"; // API endpoint path
 
   // Login method
   Future<Map<String, dynamic>> login(String email, String password) async {
     // Construct the URL using Uri.http
-    final Uri url = Uri.http(host, path);
+    final Uri url = Uri.http('$host:$port', path);
+
+    print('Logging in at: $url'); // Debug log
 
     try {
       // Make the POST request
@@ -26,6 +29,7 @@ class LoginauthService {
         print("User logged in successfully");
         // Parse the JSON response
         final Map<String, dynamic> responseData = jsonDecode(response.body);
+        print('Login response data: $responseData'); // Debug log
 
         // Extract user role
         final String role = responseData['role'];
@@ -51,11 +55,14 @@ class LoginauthService {
         };
       } else {
         // Handle non-200 status codes
+        print('Failed to login. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
         throw Exception(
             'Failed to login: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
       // Handle any errors that occur during the request
+      print('Exception occurred while logging in: $e');
       throw Exception('Failed to login: $e');
     }
   }

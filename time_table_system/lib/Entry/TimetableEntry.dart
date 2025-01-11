@@ -12,12 +12,12 @@ class TimetableEntry {
   });
 
   factory TimetableEntry.fromJson(Map<String, dynamic> json) {
-  return TimetableEntry(
-    subjectName: json['subjectName'] ?? '',
-    roomName: json['roomName'] ?? '',
-    seance: json['seance'] ?? '',
-  );
-}
+    return TimetableEntry(
+      subjectName: json['subjectName'] ?? '',
+      roomName: json['roomName'] ?? '',
+      seance: json['seance'] ?? json['Seance'] ?? '', // Handle both "seance" and "Seance"
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -26,4 +26,4 @@ class TimetableEntry {
       'seance': seance,
     };
   }
-} 
+}
