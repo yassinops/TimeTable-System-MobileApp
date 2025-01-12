@@ -22,7 +22,6 @@ class _ModifyInfoState extends State<ModifyInfo> {
   @override
   void initState() {
     super.initState();
-    // Fetch user data when the widget is initialized
     _fetchUserData();
   }
 
@@ -31,9 +30,10 @@ class _ModifyInfoState extends State<ModifyInfo> {
     try {
       final userData = await _updateService.fetchUserData(widget.userId);
       setState(() {
-        _firstNameController.text = userData['firstName'];
-        _lastNameController.text = userData['lastName'];
-        _emailController.text = userData['email'];
+        _firstNameController.text = userData.firstName;
+        _lastNameController.text = userData.lastName;
+        _emailController.text = userData.email;
+        _passwordController.text = userData.password;
         _isLoading = false;
       });
     } catch (e) {
@@ -78,99 +78,99 @@ class _ModifyInfoState extends State<ModifyInfo> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 80),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Image.asset(
-                      "assets/images/logo_iset.jpg",
-                      width: 150,
-                      height: 150,
-                    ),
-                    const SizedBox(height: 50),
-                    const Text("First Name",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    TextFormField(
-                      controller: _firstNameController,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          borderSide: BorderSide(color: Color.fromARGB(255, 246, 181, 19)),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                      ),
-                      validator: (value) =>
-                          value == null || value.isEmpty ? 'Enter your first name' : null,
-                    ),
-                    const SizedBox(height: 10),
-                    const Text("Last Name",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    TextFormField(
-                      controller: _lastNameController,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          borderSide: BorderSide(color: Color.fromARGB(255, 246, 181, 19)),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 8),
-                      ),
-                      validator: (value) =>
-                          value == null || value.isEmpty ? 'Enter your last name' : null,
-                    ),
-                    const SizedBox(height: 10),
-                    const Text("Email",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          borderSide: BorderSide(color: Color.fromARGB(255, 246, 181, 19)),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 8),
-                      ),
-                      validator: (value) =>
-                          value == null || value.isEmpty ? 'Enter your email' : null,
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      "Password",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          borderSide: BorderSide(color: Color.fromARGB(255, 246, 181, 19)),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 8),
-                      ),
-                      validator: (value) => value == null || value.length < 8
-                          ? 'Password must be at least 8 characters'
-                          : null,
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(320, 49),
-                        foregroundColor: Colors.white,
-                        backgroundColor: const Color.fromARGB(90, 95, 231, 231),
-                        padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: _updateStudent,
-                      child: const Text("Update"),
-                    ),
-                  ],
-                ),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 80),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Image.asset(
+                "assets/images/logo_iset.jpg",
+                width: 150,
+                height: 150,
               ),
-            ),
+              const SizedBox(height: 50),
+              const Text("First Name",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              TextFormField(
+                controller: _firstNameController,
+                decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    borderSide: BorderSide(color: Color.fromARGB(255, 246, 181, 19)),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                ),
+                validator: (value) =>
+                value == null || value.isEmpty ? 'Enter your first name' : null,
+              ),
+              const SizedBox(height: 10),
+              const Text("Last Name",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              TextFormField(
+                controller: _lastNameController,
+                decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    borderSide: BorderSide(color: Color.fromARGB(255, 246, 181, 19)),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 8),
+                ),
+                validator: (value) =>
+                value == null || value.isEmpty ? 'Enter your last name' : null,
+              ),
+              const SizedBox(height: 10),
+              const Text("Email",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    borderSide: BorderSide(color: Color.fromARGB(255, 246, 181, 19)),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 8),
+                ),
+                validator: (value) =>
+                value == null || value.isEmpty ? 'Enter your email' : null,
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                "Password",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    borderSide: BorderSide(color: Color.fromARGB(255, 246, 181, 19)),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 8),
+                ),
+                validator: (value) => value == null || value.length < 8
+                    ? 'Password must be at least 8 characters'
+                    : null,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(320, 49),
+                  foregroundColor: Colors.white,
+                  backgroundColor: const Color.fromARGB(90, 95, 231, 231),
+                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: _updateStudent,
+                child: const Text("Update"),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

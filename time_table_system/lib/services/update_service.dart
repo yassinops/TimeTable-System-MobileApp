@@ -1,35 +1,31 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../UserResponse.dart';
+
 class UpdateService {
-  final String host = "localhost:8080"; // Host and port combined
-  final String path = "/student"; // Base path for student-related endpoints
-
+  final String host = "localhost:8080"; // Replace with your backend host
+  final String path = "/student"; // Replace with your backend base path
+  final String pathGetProfile = "/admin";
   // Fetch user data
-  Future<Map<String, dynamic>> fetchUserData(int userId) async {
-    // Construct the URL using Uri.parse
-    final Uri url = Uri.parse('http://$host$path/getprofile/$userId');
+  Future<UserResponse> fetchUserData(int userId) async {
+    final Uri url = Uri.parse('http://$host$pathGetProfile/getprofile/$userId');
 
-    print('Fetching user data from: $url'); // Debug log
+    print('Fetching user data from: $url');
 
     try {
-      // Make the GET request
       final response = await http.get(url);
 
-      // Check if the request was successful
       if (response.statusCode == 200) {
-        // Parse the JSON response
         final Map<String, dynamic> userData = json.decode(response.body);
         print('User data fetched successfully: $userData');
-        return userData;
+        return UserResponse.fromJson(userData);
       } else {
-        // Handle non-200 status codes
         print('Failed to fetch user data. Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
         throw Exception('Failed to load user data: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle any errors that occur during the request
       print('Exception occurred while fetching user data: $e');
       throw Exception('Failed to fetch user data: $e');
     }
@@ -43,7 +39,6 @@ class UpdateService {
     required String email,
     required String password,
   }) async {
-    // Construct the URL using Uri.parse
     final Uri url = Uri.parse('http://$host$path/modifyprofile/$userId');
     final body = jsonEncode({
       'firstName': firstName,
@@ -52,18 +47,16 @@ class UpdateService {
       'password': password,
     });
 
-    print('Updating user data at: $url'); // Debug log
-    print('Request body: $body'); // Debug log
+    print('Updating user data at: $url');
+    print('Request body: $body');
 
     try {
-      // Make the PUT request
       final response = await http.put(
         url,
         headers: {'Content-Type': 'application/json'},
         body: body,
       );
 
-      // Check if the request was successful
       if (response.statusCode == 200) {
         print('User data updated successfully');
         return true;
@@ -77,4 +70,5 @@ class UpdateService {
       return false;
     }
   }
+
 }
